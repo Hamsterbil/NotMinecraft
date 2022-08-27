@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public GameObject Pickaxe;
+    public float _floatTimer = 0;
+    private int _axeArc = 3;
+    private int _speed = 10;
+    private int _frameRotation = 5;
 
-    public void Start(){
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        _floatTimer += Time.deltaTime;
+
+        if(Input.GetMouseButton(0)){
+            Pickaxe.transform.Rotate(0, 0, _frameRotation * Mathf.Cos(_floatTimer*_speed)/_axeArc);
+        }
+        
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 5);
 
         if (Input.GetMouseButtonDown(0))
@@ -35,9 +41,8 @@ public class Player : MonoBehaviour
                         rend.material.color = tempColor;
                         break;
                     }
-                }   
+                }
             }
-
         }
     }
 }

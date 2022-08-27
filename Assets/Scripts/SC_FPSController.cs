@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Copy/pasted from https://sharpcoderblog.com/blog/unity-3d-fps-controller
+*  Changed hardcoded main camera
+*/
+
 [RequireComponent(typeof(CharacterController))]
 public class SC_FPSController : MonoBehaviour
 {
@@ -9,7 +13,6 @@ public class SC_FPSController : MonoBehaviour
     public float runningSpeed = 11.5f;
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
-    public Camera playerCamera;
     public float lookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
 
