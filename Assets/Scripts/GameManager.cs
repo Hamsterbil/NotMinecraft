@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
                     if(!_blocks.ContainsKey(new Vector3Int(x,0,z))) {
                         _blocks.Add(new Vector3Int(x,0,z), Instantiate(Grass, new Vector3(x,0,z), Quaternion.identity, transform));
                     }
-                }   
+                }
             }
 
             for(int x = playerLocation.x-_playerSpawnBelow; x < playerLocation.x+_playerSpawnBelow; x++){

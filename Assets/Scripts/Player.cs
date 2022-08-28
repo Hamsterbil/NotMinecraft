@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     private int _speed = 10;
     private int _frameRotation = 5;
 
-    void Update()
+    void FixedUpdate()
     {
         _floatTimer += Time.deltaTime;
 
