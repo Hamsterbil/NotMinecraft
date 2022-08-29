@@ -7,11 +7,11 @@ public class GameManager : MonoBehaviour
     public GameObject Player;
     public GameObject Grass;
     public GameObject Dirt;
-    private Vector3Int _initialWorldSize = new Vector3Int(10,10,10);
     public Dictionary<Vector3Int, GameObject> Blocks = new Dictionary<Vector3Int, GameObject>();
-    private int _playerSpawnGrassRange = 25;
-    private int _playerSpawnBelow = 10;
-    private int _blockSpawnTime = 1;
+    protected Vector3Int _initialWorldSize = new Vector3Int(3,3,3);
+    protected int _playerSpawnGrassRange = 10;
+    protected int _playerSpawnBelow = 3;
+    protected int _blockSpawnTime = 5;
 
     public static GameManager Instance { get; private set; }
     
@@ -26,8 +26,12 @@ public class GameManager : MonoBehaviour
         } 
     }
 
-    void Start()
+    public void Start()
     {
+        StartUp();
+    }
+
+    protected virtual void StartUp (){
         //Spawn top level grass blocks
         for(int x = -_initialWorldSize.x; x < _initialWorldSize.x; x++){
             for(int z = -_initialWorldSize.z; z < _initialWorldSize.z; z++){
@@ -45,7 +49,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SpawnNewBlocks(_blockSpawnTime));
     }
 
-    private IEnumerator SpawnNewBlocks(float waitTime)
+    protected virtual IEnumerator SpawnNewBlocks(float waitTime)
     {
         while (true)
         {

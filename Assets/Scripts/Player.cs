@@ -10,10 +10,10 @@ public class Player : MonoBehaviour
     private int _axeArc = 3;
     private int _speed = 10;
     private int _frameRotation = 5;
-    private int _crosshairDistance = 2;
+    public float CrosshairDistance = 2.5f;
     private bool _mining = false;
 
-    void FixedUpdate()
+    void Update()
     {
         _floatTimer += Time.deltaTime;
 
@@ -21,17 +21,17 @@ public class Player : MonoBehaviour
             Pickaxe.transform.Rotate(0, 0, _frameRotation * Mathf.Cos(_floatTimer*_speed)/_axeArc);
         }
         
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 20);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * CrosshairDistance);
 
-        Crosshair.transform.position = Camera.main.transform.position + Camera.main.transform.forward * _crosshairDistance;
+        Crosshair.transform.position = Camera.main.transform.position + Camera.main.transform.forward * CrosshairDistance;
 
         if (Input.GetMouseButtonDown(0))
         {
             int layer_mask = LayerMask.GetMask("Terrain");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.DrawRay(ray.origin, ray.direction * 3, Color.yellow);
+            Debug.DrawRay(ray.origin, ray.direction * CrosshairDistance, Color.yellow, 1f);
             RaycastHit[] hits;
-            hits = Physics.RaycastAll(ray, 3, layer_mask);
+            hits = Physics.RaycastAll(ray, CrosshairDistance, layer_mask);
             if(hits.Length > 0 && !_mining){
                 _mining = true;
                 Destroy(hits[0].collider.gameObject); //Needs to be sorted?
