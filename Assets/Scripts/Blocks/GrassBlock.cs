@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class GrassBlock : Block
 {
-
+    protected override void Awake() {
+        base.Awake();
+        BlockType = BlockType.GRASS;
+    }
 }

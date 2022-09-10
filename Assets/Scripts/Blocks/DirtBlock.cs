@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class DirtBlock : Block
 {
-
+    protected override void Awake() {
+        base.Awake();
+        BlockType = BlockType.DIRT;
+    }
 }
