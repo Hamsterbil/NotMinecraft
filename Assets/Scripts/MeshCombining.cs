@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Clean me up
 public class MeshCombining : MonoBehaviour
 {
     public bool CombineChildMeshes = false;
