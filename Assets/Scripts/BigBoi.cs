@@ -8,7 +8,7 @@ using UnityEngine;
 public class BigBoi : GameManager
 {
     //Perlion noise area
-    public int Width = 50;
+    public int Width = 15;
     public float Scale = 5f;
 
     //Override StartUp() method from GameManager
@@ -43,12 +43,12 @@ public class BigBoi : GameManager
         {
 
         }
-        
+
         //Joins the above created arrays
         Blocks.Union(grass).Union(dirt).Union(gold);
     }
 
-    //Generates Dirt blocks in a plane, and adjusts heights based on perlin noise
+    //Generates Dirt blocks in a xz-plane, and adjusts y-heights based on perlin noise
     private void noisyLandscape()
     {
         for (int x = 0; x < Width; x++)

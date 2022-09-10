@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour
     public Dictionary<Vector3Int, GameObject> Blocks = new Dictionary<Vector3Int, GameObject>();
     protected Vector3Int _initialWorldSize = new Vector3Int(3, 3, 3);
     protected int _playerSpawnGrassRange = 10;
-    protected int _playerSpawnBelow = 3;
-    protected int _blockSpawnTime = 5;
-    private GameObject _player;
+    protected int _playerSpawnBelow = 5;
+    protected float _blockSpawnTime = 2.5f;
+    protected GameObject _player;
 
     public void Start()
     {
@@ -28,7 +28,9 @@ public class GameManager : MonoBehaviour
         {
             for (int z = -_initialWorldSize.z; z < _initialWorldSize.z; z++)
             {
-                Blocks.Add(new Vector3Int(x, 0, z), Instantiate(Grass, new Vector3(x, 0, z), Quaternion.identity, transform));
+                Vector3Int spawnLocation = new Vector3Int(x, 0, z);
+                Blocks.Add(spawnLocation, Instantiate(Grass, spawnLocation, Quaternion.identity, transform));
+                Blocks[spawnLocation].GetComponent<Block>().WorldPosition = spawnLocation;
             }
         }
         //Spawn below dirt blocks
@@ -38,7 +40,9 @@ public class GameManager : MonoBehaviour
             {
                 for (int z = -_initialWorldSize.z; z < _initialWorldSize.z; z++)
                 {
-                    Blocks.Add(new Vector3Int(x, y, z), Instantiate(Dirt, new Vector3(x, y, z), Quaternion.identity, transform));
+                    Vector3Int spawnLocation = new Vector3Int(x, y, z);
+                    Blocks.Add(spawnLocation, Instantiate(Dirt, spawnLocation, Quaternion.identity, transform));
+                    Blocks[spawnLocation].GetComponent<Block>().WorldPosition = spawnLocation;
                 }
             }
         }
@@ -60,7 +64,8 @@ public class GameManager : MonoBehaviour
                 {
                     if (!Blocks.ContainsKey(new Vector3Int(x, 0, z)))
                     {
-                        Blocks.Add(new Vector3Int(x, 0, z), Instantiate(Grass, new Vector3(x, 0, z), Quaternion.identity, transform));
+                        Vector3Int spawnLocation = new Vector3Int(x, 0, z);
+                        Blocks.Add(spawnLocation, Instantiate(Grass, spawnLocation, Quaternion.identity, transform));
                     }
                 }
             }
@@ -73,7 +78,8 @@ public class GameManager : MonoBehaviour
                     {
                         if (!Blocks.ContainsKey(new Vector3Int(x, y, z)))
                         {
-                            Blocks.Add(new Vector3Int(x, y, z), Instantiate(Dirt, new Vector3(x, y, z), Quaternion.identity, transform));
+                            Vector3Int spawnLocation = new Vector3Int(x, y, z);
+                            Blocks.Add(spawnLocation, Instantiate(Dirt, spawnLocation, Quaternion.identity, transform));
                         }
                     }
                 }
