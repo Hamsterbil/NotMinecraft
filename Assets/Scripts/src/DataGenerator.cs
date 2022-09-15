@@ -29,9 +29,9 @@ public class DataGenerator
 
     public IEnumerator DataGenLoop()
     {
-        while(Terminate == false)
+        while (Terminate == false)
         {
-            if(DataToGenerate.Count > 0)
+            if (DataToGenerate.Count > 0)
             {
                 GenData gen = DataToGenerate.Dequeue();
                 yield return GeneratorInstance.StartCoroutine(GenerateData(gen.GenerationPoint, gen.OnComplete));
@@ -43,7 +43,35 @@ public class DataGenerator
 
     public IEnumerator GenerateData(Vector3Int offset, System.Action<int[,,]> callback)
     {
+        Vector3Int ChunkSize = WorldGenerator.ChunkSize;
 
+        int[,,] TempData = new int[ChunkSize.x, ChunkSize.y, ChunkSize.z];
+
+        Task t = Task.Factory.StartNew(delegate
+        {
+            if(offset.x < 2 && offset.z < 2 && offset.x > -2 && offset.z > -2){
+                TempData = generateStartingArea(offset);
+            }else if(offset.x > 2 && offset.z > 2){
+                TempData = generateMountains(offset);
+            }else{
+                TempData = generatePlains(offset);
+            }
+        });
+
+        yield return new WaitUntil(() =>
+        {
+            return t.IsCompleted || t.IsCanceled;
+        });
+
+        if (t.Exception != null)
+            Debug.LogError(t.Exception);
+
+        WorldGenerator.WorldData.Add(offset, TempData);
+        callback(TempData);
+    }
+
+    private int[,,] generateStartingArea(Vector3Int offset)
+    {
         Vector3Int ChunkSize = WorldGenerator.ChunkSize;
         Vector2 NoiseOffset = GeneratorInstance.NoiseOffset;
         Vector2 NoiseScale = GeneratorInstance.NoiseScale;
@@ -53,46 +81,125 @@ public class DataGenerator
 
         int[,,] TempData = new int[ChunkSize.x, ChunkSize.y, ChunkSize.z];
 
-        Task t = Task.Factory.StartNew(delegate
+        for (int x = 0; x < ChunkSize.x; x++)
         {
-            for (int x = 0; x < ChunkSize.x; x++)
+            for (int z = 0; z < ChunkSize.z; z++)
             {
-                for (int z = 0; z < ChunkSize.z; z++)
+                //float PerlinCoordX = NoiseOffset.x + (x + (offset.x * 16f)) / ChunkSize.x * NoiseScale.x;
+                //float PerlinCoordY = NoiseOffset.y + (z + (offset.z * 16f)) / ChunkSize.z * NoiseScale.y;
+                //int HeightGen = Mathf.RoundToInt(Mathf.PerlinNoise(PerlinCoordX, PerlinCoordY) * HeightIntensity + HeightOffset);
+                int HeightGen = Mathf.RoundToInt(HeightOffset);
+                for (int y = HeightGen; y >= 0; y--)
                 {
-                    float PerlinCoordX = NoiseOffset.x + (x + (offset.x * 16f)) / ChunkSize.x * NoiseScale.x;
-                    float PerlinCoordY = NoiseOffset.y + (z + (offset.z * 16f)) / ChunkSize.z * NoiseScale.y;
-                    int HeightGen = Mathf.RoundToInt(Mathf.PerlinNoise(PerlinCoordX, PerlinCoordY) * HeightIntensity + HeightOffset);
+                    int BlockTypeToAssign = 0;
 
-                    for (int y = HeightGen; y >= 0; y--)
-                    {
-                        int BlockTypeToAssign = 0;
+                    // Set first layer to grass
+                    if (y == HeightGen) BlockTypeToAssign = 1;
 
-                        // Set first layer to grass
-                        if (y == HeightGen) BlockTypeToAssign = 1;
+                    //Set next 3 layers to dirt
+                    if (y < HeightGen && y > HeightGen - 4) BlockTypeToAssign = 2;
 
-                        //Set next 3 layers to dirt
-                        if (y < HeightGen && y > HeightGen - 4) BlockTypeToAssign = 2;
+                    //Set everything between the dirt range (inclusive) and 0 (exclusive) to stone
+                    if (y <= HeightGen - 4 && y > 0) BlockTypeToAssign = 3;
 
-                        //Set everything between the dirt range (inclusive) and 0 (exclusive) to stone
-                        if (y <= HeightGen - 4 && y > 0) BlockTypeToAssign = 3;
+                    //Set everything at height 0 to bedrock.
+                    if (y == 0) BlockTypeToAssign = 4;
 
-                        //Set everything at height 0 to bedrock.
-                        if (y == 0) BlockTypeToAssign = 4;
-
-                        TempData[x, y, z] = BlockTypeToAssign;
-                    }
+                    TempData[x, y, z] = BlockTypeToAssign;
                 }
             }
-        });
+        }
+        return TempData;
+    }
 
-        yield return new WaitUntil(() => {
-            return t.IsCompleted || t.IsCanceled;
-        });
+    private int[,,] generatePlains(Vector3Int offset)
+    {
+        Vector3Int ChunkSize = WorldGenerator.ChunkSize;
+        Vector2 NoiseOffset = GeneratorInstance.NoiseOffset;
+        Vector2 NoiseScale = GeneratorInstance.NoiseScale;
 
-        if (t.Exception != null)
-            Debug.LogError(t.Exception);
+        float HeightIntensity = GeneratorInstance.HeightIntensity;
+        float HeightOffset = GeneratorInstance.HeightOffset;
 
-        WorldGenerator.WorldData.Add(offset, TempData);
-        callback(TempData);
+        int[,,] TempData = new int[ChunkSize.x, ChunkSize.y, ChunkSize.z];
+
+        for (int x = 0; x < ChunkSize.x; x++)
+        {
+            for (int z = 0; z < ChunkSize.z; z++)
+            {
+                float PerlinCoordX = NoiseOffset.x + (x + (offset.x * 16f)) / ChunkSize.x * NoiseScale.x;
+                float PerlinCoordY = NoiseOffset.y + (z + (offset.z * 16f)) / ChunkSize.z * NoiseScale.y;
+                int HeightGen = Mathf.RoundToInt(Mathf.PerlinNoise(PerlinCoordX, PerlinCoordY) * HeightIntensity + HeightOffset);
+
+                for (int y = HeightGen; y >= 0; y--)
+                {
+                    int BlockTypeToAssign = 0;
+
+                    // Set first layer to grass
+                    if (y == HeightGen) BlockTypeToAssign = 1;
+
+                    //Set next 3 layers to dirt
+                    if (y < HeightGen && y > HeightGen - 4) BlockTypeToAssign = 2;
+
+                    //Set everything between the dirt range (inclusive) and 0 (exclusive) to stone
+                    if (y <= HeightGen - 4 && y > 0) BlockTypeToAssign = 3;
+
+                    //Set everything at height 0 to bedrock.
+                    if (y == 0) BlockTypeToAssign = 4;
+
+                    TempData[x, y, z] = BlockTypeToAssign;
+                }
+            }
+        }
+        return TempData;
+    }
+    
+    private int[,,] generateMountains(Vector3Int offset)
+    {
+        Vector3Int ChunkSize = WorldGenerator.ChunkSize;
+        Vector2 NoiseOffset = GeneratorInstance.NoiseOffset;
+        Vector2 NoiseScale = GeneratorInstance.NoiseScale;
+
+        float HeightIntensity = GeneratorInstance.HeightIntensity;
+        float HeightOffset = GeneratorInstance.HeightOffset;
+
+        
+        float increase = (offset.x + offset.z)/2;
+        if(increase >= HeightOffset) {
+            increase = HeightOffset;
+        }
+        HeightIntensity = increase-1;
+
+        int[,,] TempData = new int[ChunkSize.x, ChunkSize.y, ChunkSize.z];
+
+        for (int x = 0; x < ChunkSize.x; x++)
+        {
+            for (int z = 0; z < ChunkSize.z; z++)
+            {
+                float PerlinCoordX = NoiseOffset.x + (x + (offset.x * 16f)) / ChunkSize.x * NoiseScale.x;
+                float PerlinCoordY = NoiseOffset.y + (z + (offset.z * 16f)) / ChunkSize.z * NoiseScale.y;
+                int HeightGen = Mathf.RoundToInt(Mathf.PerlinNoise(PerlinCoordX, PerlinCoordY) * HeightIntensity + HeightOffset);
+
+                for (int y = HeightGen; y >= 0; y--)
+                {
+                    int BlockTypeToAssign = 0;
+
+                    // Set first layer to grass
+                    if (y == HeightGen) BlockTypeToAssign = 1;
+
+                    //Set next 3 layers to dirt
+                    if (y < HeightGen && y > HeightGen - 4) BlockTypeToAssign = 2;
+
+                    //Set everything between the dirt range (inclusive) and 0 (exclusive) to stone
+                    if (y <= HeightGen - 4 && y > 0) BlockTypeToAssign = 3;
+
+                    //Set everything at height 0 to bedrock.
+                    if (y == 0) BlockTypeToAssign = 4;
+
+                    TempData[x, y, z] = BlockTypeToAssign;
+                }
+            }
+        }
+        return TempData;
     }
 }

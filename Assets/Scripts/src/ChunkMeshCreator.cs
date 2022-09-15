@@ -190,7 +190,6 @@ public class ChunkMeshCreator
         }
     }
 
-
     public IEnumerator CreateMeshFromData(int[,,] Data, System.Action<Mesh> callback)
     {
         List<Vector3> Vertices = new List<Vector3>();
@@ -288,4 +287,6 @@ public class ChunkMeshCreator
 
         callback(m);
     }
+
+    //public IEnumerator UpdateMeshFromData(Mesh target, int[,,] Data, System.Action<Mesh> callback){}
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Linq;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class WorldGenerator : MonoBehaviour
 
     private ChunkMeshCreator meshCreator;
     private DataGenerator dataCreator;
+    
     void Start()
     {
         WorldData = new Dictionary<Vector3Int, int[,,]>();
@@ -42,6 +44,7 @@ public class WorldGenerator : MonoBehaviour
 
         newChunk.transform.position = new Vector3(ChunkCoord.x * 16, 0f, ChunkCoord.y * 16);
         ActiveChunks.Add(ChunkCoord, newChunk);
+        newChunk.transform.SetParent(transform);
 
         int[,,] dataToApply = WorldData.ContainsKey(pos) ? WorldData[pos] : null;
         Mesh meshToUse = null;
@@ -105,6 +108,26 @@ public class WorldGenerator : MonoBehaviour
             Vector3Int coordsToChange = WorldToLocalCoords(WorldPosition, coords);
             WorldData[DataPosition][coordsToChange.x, coordsToChange.y, coordsToChange.z] = BlockType;
             UpdateChunk(coords);
+        }
+    }
+    
+    public void SetBlock(List<Vector3Int> WorldPositions, int BlockType = 0)
+    {   
+        Vector2Int[] coords = new Vector2Int[WorldPositions.Count];
+        Vector3Int[] dataPos = new Vector3Int[WorldPositions.Count];
+        for(int i = 0; i < WorldPositions.Count; i++){
+            coords[i] = GetChunkCoordsFromPosition(WorldPositions[i]);
+            dataPos[i] = new Vector3Int(coords[i].x, 0, coords[i].y);
+
+            if(WorldData.ContainsKey(dataPos[i])){
+                Vector3Int coordsToChange = WorldToLocalCoords(WorldPositions[i], coords[i]);
+                WorldData[dataPos[i]][coordsToChange.x, coordsToChange.y, coordsToChange.z] = BlockType;
+            }
+        }
+        Vector2Int[] distinctCoords = coords.Distinct().ToArray();
+        foreach (var item in distinctCoords)
+        {
+            UpdateChunk(item);
         }
     }
 
