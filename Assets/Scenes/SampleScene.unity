@@ -1577,6 +1577,7 @@ GameObject:
   - component: {fileID: 1440024276}
   - component: {fileID: 1440024277}
   - component: {fileID: 1440024278}
+  - component: {fileID: 1440024279}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -1744,6 +1745,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 389975675}
   RenderDistance: 2
+--- !u!114 &1440024279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1440024272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0a63ec32d06ed64a943bdec0dc775e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockPrefab: {fileID: 3107600990079197915, guid: 6ef22a80d0e8c4b48b8d0a8413eefdef, type: 3}
+  chunkSize: 50
+  noiseScale: 0.05
+  threshold: 0.5
+  material: {fileID: 2100000, guid: 04045d7d66fbcb84299e719b04b402ec, type: 2}
+  sphere: 1
 --- !u!1 &1465431956
 GameObject:
   m_ObjectHideFlags: 0
