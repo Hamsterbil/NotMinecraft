@@ -30,21 +30,23 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!Driver)
-            return;
         float motor = maxMotorTorque * Input.GetAxis("Vertical");
         float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
         for (int i = 0; i < axleInfos.Count; i++)
         {
-            if (axleInfos[i].steering)
-            {
-                Steering(axleInfos[i], steering);
-            }
-            if (axleInfos[i].motor)
+            if (axleInfos[i].motor && Driver)
             {
                 Acceleration(axleInfos[i], motor);
             }
-            if (Input.GetKey(KeyCode.Space))
+            else
+            {
+                Deceleration(axleInfos[i]);
+            }
+            if (axleInfos[i].steering && Driver)
+            {
+                Steering(axleInfos[i], steering);
+            }
+            if (Input.GetKey(KeyCode.Space) && Driver)
             {
                 Brake(axleInfos[i]);
             }
@@ -62,10 +64,7 @@ public class CarController : MonoBehaviour
             axleInfo.leftWheelCollider.motorTorque = motor;
             axleInfo.rightWheelCollider.motorTorque = motor;
         }
-        else
-        {
-            Deceleration(axleInfo);
-        }
+
     }
 
     private void Deceleration(AxleInfo axleInfo)
@@ -115,7 +114,6 @@ public class CarController : MonoBehaviour
         {
             GetOut();
         }
-
     }
 
     private void GetOut()
