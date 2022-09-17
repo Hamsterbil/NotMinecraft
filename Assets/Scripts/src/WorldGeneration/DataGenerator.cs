@@ -13,6 +13,8 @@ public class DataGenerator
 
     private WorldGenerator GeneratorInstance;
     private Queue<GenData> DataToGenerate;
+    private float _noiseScale = .1f;
+
     public bool Terminate;
     public DataGenerator(WorldGenerator worldGen)
     {
@@ -49,11 +51,16 @@ public class DataGenerator
 
         Task t = Task.Factory.StartNew(delegate
         {
-            if(offset.x < 2 && offset.z < 2 && offset.x > -2 && offset.z > -2){
+            if (offset.x < 2 && offset.z < 2 && offset.x > -2 && offset.z > -2)
+            {
                 TempData = generateStartingArea(offset);
-            }else if(offset.x > 2 && offset.z > 2){
+            }
+            else if (offset.x > 2 && offset.z > 2)
+            {
                 TempData = generateMountains(offset);
-            }else{
+            }
+            else
+            {
                 TempData = generatePlains(offset);
             }
         });
@@ -133,6 +140,7 @@ public class DataGenerator
 
                 for (int y = HeightGen; y >= 0; y--)
                 {
+
                     int BlockTypeToAssign = 0;
 
                     // Set first layer to grass
@@ -147,13 +155,24 @@ public class DataGenerator
                     //Set everything at height 0 to bedrock.
                     if (y == 0) BlockTypeToAssign = 4;
 
+                    float px = PerlinCoordX;
+                    float py = y;
+                    float pz = PerlinCoordY;
+
+                    float noiseValue = Perlin3D(px * _noiseScale, py * _noiseScale, pz * _noiseScale);
+                    if (noiseValue >= 0.55f && y < HeightGen - 10)
+                    {
+                        BlockTypeToAssign = 5;
+                    }
+
                     TempData[x, y, z] = BlockTypeToAssign;
                 }
+
             }
         }
         return TempData;
     }
-    
+
     private int[,,] generateMountains(Vector3Int offset)
     {
         Vector3Int ChunkSize = WorldGenerator.ChunkSize;
@@ -163,12 +182,13 @@ public class DataGenerator
         float HeightIntensity = GeneratorInstance.HeightIntensity;
         float HeightOffset = GeneratorInstance.HeightOffset;
 
-        
-        float increase = (offset.x + offset.z)/2;
-        if(increase >= HeightOffset) {
+
+        float increase = (offset.x + offset.z) / 2;
+        if (increase >= HeightOffset)
+        {
             increase = HeightOffset;
         }
-        HeightIntensity = increase-1;
+        HeightIntensity = increase - 1;
 
         int[,,] TempData = new int[ChunkSize.x, ChunkSize.y, ChunkSize.z];
 
@@ -202,4 +222,20 @@ public class DataGenerator
         }
         return TempData;
     }
+
+    public static float Perlin3D(float x, float y, float z)
+    {
+        float ab = Mathf.PerlinNoise(x, y);
+        float bc = Mathf.PerlinNoise(y, z);
+        float ac = Mathf.PerlinNoise(x, z);
+
+        float ba = Mathf.PerlinNoise(y, x);
+        float cb = Mathf.PerlinNoise(z, y);
+        float ca = Mathf.PerlinNoise(z, x);
+
+        float abc = ab + bc + ac + ba + cb + ca;
+        return abc / 6f;
+    }
+
+
 }

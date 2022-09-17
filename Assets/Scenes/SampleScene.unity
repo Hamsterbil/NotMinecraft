@@ -1711,10 +1711,10 @@ MonoBehaviour:
       RightT: []
       ForwardT: []
       BackT: []
-  - TextureName: Grass
-    XTexture: {fileID: 562364323, guid: ea6cb50635d39a641a7cb64a02ba75b8, type: 3}
-    YTexture: {fileID: 1621077260, guid: ea6cb50635d39a641a7cb64a02ba75b8, type: 3}
-    ZTexture: {fileID: 562364323, guid: ea6cb50635d39a641a7cb64a02ba75b8, type: 3}
+  - TextureName: Gold
+    XTexture: {fileID: 1894676876, guid: ea6cb50635d39a641a7cb64a02ba75b8, type: 3}
+    YTexture: {fileID: 1894676876, guid: ea6cb50635d39a641a7cb64a02ba75b8, type: 3}
+    ZTexture: {fileID: 1894676876, guid: ea6cb50635d39a641a7cb64a02ba75b8, type: 3}
     XTextureT: []
     YTextureT: []
     ZTextureT: []

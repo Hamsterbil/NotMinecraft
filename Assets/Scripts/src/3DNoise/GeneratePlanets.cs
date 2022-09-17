@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+//Source code from this script from https://www.youtube.com/watch?v=TZFv493D7jo
 public class GeneratePlanets : MonoBehaviour {
 
     [SerializeField]
@@ -105,7 +106,8 @@ public class GeneratePlanets : MonoBehaviour {
             sceneMeshes.Add(g);
         }
         foreach(GameObject go in sceneMeshes){
-            go.transform.Translate(Vector3.up*50);
+            go.transform.Translate(Vector3.up*100);
+            go.transform.Translate(Vector3.left*100);
         }
 
         #endregion
