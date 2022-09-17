@@ -225,7 +225,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 389975669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c9a6102b6624f4f87084b71a351e78, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f5e9aa9bedfb8046969f0ba6d1f911e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   walkingSpeed: 7.5

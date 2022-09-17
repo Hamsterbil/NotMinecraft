@@ -5,7 +5,7 @@ using UnityEngine;
 
 //Inherits from the GameManager.cs script, to populate the Block Dictionary with prefabs
 //It makes use of Mathf.PerlinNoise(x,y) to generate a coresponding height value
-public class BigBoi : GameManager
+public class NoiseExample : SimpleTerrain
 {
     //Perlion noise area
     public int Width = 15;

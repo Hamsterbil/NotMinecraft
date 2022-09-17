@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class SimpleTerrain : MonoBehaviour
 {
 
     public GameObject Grass;
@@ -13,11 +13,10 @@ public class GameManager : MonoBehaviour
     protected int _playerSpawnGrassRange = 10;
     protected int _playerSpawnBelow = 5;
     protected float _blockSpawnTime = 2.5f;
-    protected GameObject _player;
+    public GameObject Player;
 
     public void Start()
     {
-        _player = GameObject.FindGameObjectWithTag("Player");
         StartUp();
     }
 
@@ -56,7 +55,7 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             //Translating the player coordinates to integer 
-            Vector3Int playerLocation = Vector3Int.FloorToInt(_player.transform.position);
+            Vector3Int playerLocation = Vector3Int.FloorToInt(Player.transform.position);
 
             for (int x = playerLocation.x - _playerSpawnGrassRange; x < playerLocation.x + _playerSpawnGrassRange; x++)
             {

@@ -85,14 +85,13 @@ public class CarController : MonoBehaviour
         axleInfo.rightWheelCollider.brakeTorque = brakeTorque;
     }
 
-	public void GetIn(CarInteracter player)
+	public void GetIn(FPSPlayer player)
     {
-        print(player.gameObject.name + " is getting in");
-        player.gameObject.GetComponent<SC_FPSController>().enabled = false;
+        player.gameObject.GetComponent<FPSPlayer>().enabled = false;
         player.gameObject.GetComponent<CharacterController>().enabled = false;
 		player.gameObject.GetComponent<ChunkInteracter>().enabled = false;
         player.gameObject.GetComponent<CapsuleCollider>().enabled = false;
-		player.gameObject.GetComponent<CarInteracter>().enabled = false;
+		
 
         player.gameObject.transform.position = DriverSeat.transform.position;
         player.gameObject.transform.rotation = DriverSeat.transform.rotation;
@@ -119,10 +118,10 @@ public class CarController : MonoBehaviour
     private void GetOut()
     {
         Driver.gameObject.GetComponent<CharacterController>().enabled = true;
-        Driver.gameObject.GetComponent<SC_FPSController>().enabled = true;
+        Driver.gameObject.GetComponent<FPSPlayer>().enabled = true;
 		Driver.gameObject.GetComponent<ChunkInteracter>().enabled = true;
-		Driver.gameObject.GetComponent<CarInteracter>().enabled = true;
-        Driver.gameObject.transform.position = DriverSeat.transform.position - Vector3.right;
+		
+        Driver.gameObject.transform.position = DriverSeat.transform.position + Vector3.up;
 
         Driver.gameObject.transform.SetParent(null);
         Driver.gameObject.GetComponent<CapsuleCollider>().enabled = true;

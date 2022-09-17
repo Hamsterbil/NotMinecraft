@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* Copy/pasted from https://sharpcoderblog.com/blog/unity-3d-fps-controller
-*  Changed hardcoded main camera
+*  Changed to hardcoded main camera
+*  Added KeyCode.E interaction ray check
 */
 
 [RequireComponent(typeof(CharacterController))]
-public class SC_FPSController : MonoBehaviour
+public class FPSPlayer : MonoBehaviour
 {
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
@@ -73,6 +74,22 @@ public class SC_FPSController : MonoBehaviour
             Camera.main.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
             
+        }
+
+        InteractCheck();
+    }
+
+    private void InteractCheck(){
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Ray camRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            if (Physics.Raycast(camRay, out RaycastHit hitInfo, 5f))
+            {
+                Vector3 targetPoint = hitInfo.point - hitInfo.normal * .1f;
+                if(hitInfo.collider.gameObject.name == "CarCollider"){
+                    hitInfo.collider.transform.parent.gameObject.GetComponent<CarController>().GetIn(this);
+                }
+            }
         }
     }
 }
