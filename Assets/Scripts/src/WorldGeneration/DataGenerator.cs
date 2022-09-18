@@ -154,17 +154,6 @@ public class DataGenerator
                     //Set everything at height 0 to bedrock.
                     if (y == 0) BlockTypeToAssign = 4;
 
-                    float p3Offset = NoiseScale.x;
-                    float px = p3Offset + (PerlinCoordX * _noiseScale.x);
-                    float py = p3Offset + (y * _noiseScale.y);
-                    float pz = p3Offset + (PerlinCoordY * _noiseScale.x);
-
-                    float noiseValue = Perlin3D(px, py, pz);
-                    if (noiseValue >= 0.52f && y < HeightGen - 5)
-                    {
-                        BlockTypeToAssign = 5;
-                    }
-
                     TempData[x, y, z] = BlockTypeToAssign;
                 }
 
@@ -215,6 +204,17 @@ public class DataGenerator
 
                     //Set everything at height 0 to bedrock.
                     if (y == 0) BlockTypeToAssign = 4;
+
+                    float p3Offset = NoiseScale.x;
+                    float px = p3Offset + (PerlinCoordX * _noiseScale.x);
+                    float py = p3Offset + (y * _noiseScale.y);
+                    float pz = p3Offset + (PerlinCoordY * _noiseScale.x);
+
+                    float noiseValue = Perlin3D(px, py, pz);
+                    if (noiseValue >= 0.52f && y < HeightGen - 5)
+                    {
+                        BlockTypeToAssign = 5;
+                    }
 
                     TempData[x, y, z] = BlockTypeToAssign;
                 }
