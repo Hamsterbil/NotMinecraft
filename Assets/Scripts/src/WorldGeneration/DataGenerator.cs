@@ -13,7 +13,7 @@ public class DataGenerator
 
     private WorldGenerator GeneratorInstance;
     private Queue<GenData> DataToGenerate;
-    private float _noiseScale = .1f;
+    private Vector2 _noiseScale = new Vector2(1f, 0.1f);
 
     public bool Terminate;
     public DataGenerator(WorldGenerator worldGen)
@@ -140,7 +140,6 @@ public class DataGenerator
 
                 for (int y = HeightGen; y >= 0; y--)
                 {
-
                     int BlockTypeToAssign = 0;
 
                     // Set first layer to grass
@@ -155,12 +154,13 @@ public class DataGenerator
                     //Set everything at height 0 to bedrock.
                     if (y == 0) BlockTypeToAssign = 4;
 
-                    float px = PerlinCoordX;
-                    float py = y;
-                    float pz = PerlinCoordY;
+                    float p3Offset = NoiseScale.x;
+                    float px = p3Offset + (PerlinCoordX * _noiseScale.x);
+                    float py = p3Offset + (y * _noiseScale.y);
+                    float pz = p3Offset + (PerlinCoordY * _noiseScale.x);
 
-                    float noiseValue = Perlin3D(px * _noiseScale, py * _noiseScale, pz * _noiseScale);
-                    if (noiseValue >= 0.55f && y < HeightGen - 10)
+                    float noiseValue = Perlin3D(px, py, pz);
+                    if (noiseValue >= 0.52f && y < HeightGen - 5)
                     {
                         BlockTypeToAssign = 5;
                     }
